@@ -4,6 +4,7 @@ export type ZoneName = (typeof ZONE_NAMES)[number]
 export type DataSourceId = 0 | 1
 export type CalendarMetric = 'detections' | 'frp'
 export type SensorGroup = 'MODIS_AQUA' | 'VIIRS_N20' | 'VIIRS_SNPP'
+export type CalibrationQuantity = 'n_detections' | 'sum_frp'
 
 export interface WeekRange {
   start: string
@@ -27,8 +28,18 @@ export interface ManifestZone {
 export interface CalibrationRatio {
   zone: ZoneName
   daynight: 'D' | 'N'
-  quantity: 'n_detections' | 'sum_frp'
+  quantity: CalibrationQuantity
   training_ratio_modis_over_viirs: number
+}
+
+export interface CalibrationMetric {
+  zone: ZoneName
+  daynight: 'D' | 'N'
+  quantity: CalibrationQuantity
+  training_ratio_modis_over_viirs: number
+  pearson_r: number
+  spearman_r: number
+  mae: number
 }
 
 export interface FireDataSource {
@@ -64,7 +75,7 @@ export type FireDataRecord = readonly [
 
 export interface SensorWeeklySeries {
   n_detections: Array<number | null>
-  sum_frp: Array<number | null>
+  sum_frp?: Array<number | null>
 }
 
 export interface ZoneFireData {

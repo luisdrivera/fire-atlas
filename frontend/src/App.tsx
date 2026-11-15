@@ -7,7 +7,8 @@ import { StatsPanel } from './components/dashboard/StatsPanel'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { FireMap } from './components/map/FireMap'
-import { useApiHealth } from './hooks/useApiHealth'
+import { ValidationPanel } from './components/comparison/ValidationPanel'
+import { useCalibrationMetrics } from './hooks/useCalibrationMetrics'
 import { useFrontendFireData } from './hooks/useFrontendFireData'
 import type { CalendarMetric } from './types/fire'
 import './App.css'
@@ -22,7 +23,11 @@ function formatZoneName(value: string): string {
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [metric, setMetric] = useState<CalendarMetric>('detections')
-  const connectionStatus = useApiHealth()
+  const {
+    metrics,
+    isLoading: isMetricsLoading,
+    error: metricsError,
+  } = useCalibrationMetrics()
   const {
     manifest,
     zone,
@@ -62,21 +67,10 @@ function App() {
 
       <div className="app-main">
         <Header
-          connectionStatus={connectionStatus}
           isMenuOpen={sidebarOpen}
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="dashboard-content" id="overview">
-          {connectionStatus === 'connecting' && (
-            <LoadingState message="Checking backend connection..." />
-          )}
-          {connectionStatus === 'offline' && (
-            <ErrorState
-              message="The dashboard is available, but the backend health endpoint could not be reached."
-              title="Backend unavailable"
-            />
-          )}
-
           <section aria-labelledby="overview-title" className="welcome-section">
             <div>
               <p className="eyebrow">GLOBAL FIRE MONITORING</p>
@@ -150,41 +144,51 @@ function App() {
             <StatsPanel data={data} manifest={manifest} metric={metric} />
           )}
 
-          <section aria-labelledby="map-title" className="dashboard-section" id="map">
+          <section
+            aria-labelledby="calendar-title"
+            className="dashboard-section calendar-panel"
+            id="calendar"
+          >
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">HISTORICAL PATTERNS</p>
+                <h2 id="calendar-title">Burning Activity Calendar</h2>
+              </div>
+              <span className="section-meta">
+                {metric === 'detections' ? 'DETECTIONS' : 'FRP'}
+              </span>
+            </div>
+            {manifest && data && (
+              <BurningCalendar
+                data={data}
+                manifest={manifest}
+                metric={metric}
+              />
+            )}
+          </section>
+
+          <section
+            aria-labelledby="map-title"
+            className="dashboard-section map-panel"
+            id="map"
+          >
             <div className="section-heading">
               <div>
                 <p className="eyebrow">GEOGRAPHIC DISTRIBUTION</p>
-                <h2 id="map-title">Global fire map</h2>
+                <h2 id="map-title">Fire activity map</h2>
               </div>
-              <span className="section-meta">WORLDWIDE</span>
+              <span className="section-meta">
+                {metric === 'detections' ? 'DETECTIONS' : 'FRP'}
+              </span>
             </div>
-            <FireMap />
+            <FireMap
+              data={data}
+              gridSize={manifest?.grid_size_degrees ?? null}
+              metric={metric}
+            />
           </section>
 
           <div className="analysis-grid">
-            <section
-              aria-labelledby="calendar-title"
-              className="dashboard-section analysis-panel"
-              id="calendar"
-            >
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">HISTORICAL PATTERNS</p>
-                  <h2 id="calendar-title">Burning Activity Calendar</h2>
-                </div>
-                <span className="section-meta">
-                  {metric === 'detections' ? 'DETECTIONS' : 'FRP'}
-                </span>
-              </div>
-              {manifest && data && (
-                <BurningCalendar
-                  data={data}
-                  manifest={manifest}
-                  metric={metric}
-                />
-              )}
-            </section>
-
             <section
               aria-labelledby="comparison-title"
               className="dashboard-section analysis-panel"
@@ -195,9 +199,37 @@ function App() {
                   <p className="eyebrow">SENSOR COVERAGE</p>
                   <h2 id="comparison-title">MODIS vs VIIRS</h2>
                 </div>
-                <span aria-hidden="true" className="panel-icon">vs</span>
+                <span aria-hidden="true" className="panel-icon">
+                  vs
+                </span>
               </div>
-              <SensorComparisonChart data={[]} />
+              <SensorComparisonChart
+                data={data}
+                error={error}
+                isLoading={isLoading}
+                metric={metric}
+              />
+            </section>
+
+            <section
+              aria-labelledby="validation-title"
+              className="dashboard-section analysis-panel"
+              id="validation"
+            >
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">CALIBRATION PERFORMANCE</p>
+                  <h2 id="validation-title">
+                    Validation (test period 2023-2024)
+                  </h2>
+                </div>
+              </div>
+              <ValidationPanel
+                error={metricsError}
+                isLoading={isMetricsLoading}
+                metrics={metrics}
+                zone={zone}
+              />
             </section>
           </div>
 

@@ -1,5 +1,6 @@
 import {
   ZONE_NAMES,
+  type CalibrationMetric,
   type CalibrationRatio,
   type DataSourceId,
   type FireDataManifest,
@@ -65,6 +66,19 @@ function isCalibrationRatio(value: unknown): value is CalibrationRatio {
   )
 }
 
+function isCalibrationMetric(value: unknown): value is CalibrationMetric {
+  return (
+    isObject(value) &&
+    ZONE_NAMES.some((name) => name === value.zone) &&
+    (value.daynight === 'D' || value.daynight === 'N') &&
+    (value.quantity === 'n_detections' || value.quantity === 'sum_frp') &&
+    isFiniteNumber(value.training_ratio_modis_over_viirs) &&
+    isFiniteNumber(value.pearson_r) &&
+    isFiniteNumber(value.spearman_r) &&
+    isFiniteNumber(value.mae)
+  )
+}
+
 function isFireDataSource(value: unknown): value is FireDataSource {
   return (
     isObject(value) &&
@@ -118,8 +132,14 @@ function isSeries(value: unknown, weekCount: number): value is SensorWeeklySerie
 
   return (
     isAlignedSeries(value.n_detections) &&
-    isAlignedSeries(value.sum_frp)
+    (value.sum_frp === undefined || isAlignedSeries(value.sum_frp))
   )
+}
+
+function isCalibrationMetricArray(
+  value: unknown,
+): value is CalibrationMetric[] {
+  return Array.isArray(value) && value.every(isCalibrationMetric)
 }
 
 function isZoneFireData(value: unknown): value is ZoneFireData {
@@ -169,6 +189,12 @@ async function fetchJson<T>(
 
 export function loadFireManifest(signal: AbortSignal): Promise<FireDataManifest> {
   return fetchJson('/data/manifest.json', isManifest, signal)
+}
+
+export function loadCalibrationMetrics(
+  signal: AbortSignal,
+): Promise<CalibrationMetric[]> {
+  return fetchJson('/data/metrics.json', isCalibrationMetricArray, signal)
 }
 
 export function loadZoneFireData(

@@ -138,7 +138,6 @@
 
 .topbar-left,
 .topbar-right,
-.connection-status,
 .topbar-context {
   display: flex;
   align-items: center;
@@ -164,29 +163,29 @@
   letter-spacing: 0.11em;
 }
 
-.connection-status {
+.static-data-badge {
+  display: inline-flex;
   gap: 8px;
+  align-items: center;
   color: var(--color-text-secondary);
   font-size: 11px;
 }
 
-.status-dot,
+.static-data-dot,
 .data-status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--color-status-pending);
-  box-shadow: 0 0 0 3px var(--color-status-pending-wash);
 }
 
-.status-dot--connected {
+.static-data-dot {
   background: var(--color-status-good);
   box-shadow: 0 0 0 3px var(--color-status-good-wash);
 }
 
-.status-dot--offline {
-  background: var(--color-status-bad);
-  box-shadow: 0 0 0 3px var(--color-status-bad-wash);
+.data-status-dot {
+  background: var(--color-status-pending);
+  box-shadow: 0 0 0 3px var(--color-status-pending-wash);
 }
 
 .menu-toggle,
@@ -344,6 +343,11 @@
   margin-bottom: 28px;
 }
 
+.calendar-panel,
+.map-panel {
+  margin-bottom: 14px;
+}
+
 .stat-card,
 .dashboard-section {
   border: 1px solid var(--color-border);
@@ -456,6 +460,21 @@
   color: var(--color-brand);
 }
 
+.fire-map .leaflet-tooltip {
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-tooltip);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 10px;
+}
+
+.fire-map .leaflet-tooltip-top::before {
+  border-top-color: var(--color-tooltip);
+}
+
 .map-empty-label {
   position: absolute;
   top: 14px;
@@ -481,7 +500,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
-  margin-top: 15px;
+  margin-top: 0;
 }
 
 .analysis-panel {
@@ -544,8 +563,12 @@
   color: var(--sensor-modis);
 }
 
-.sensor-badge--viirs {
+.sensor-badge--viirs-n20 {
   color: var(--sensor-viirs);
+}
+
+.sensor-badge--viirs-snpp {
+  color: var(--sensor-viirs-light);
 }
 
 .sensor-badge strong {
@@ -576,6 +599,25 @@
 
 .chart-tooltip .tooltip-viirs {
   color: var(--sensor-viirs);
+}
+
+.chart-tooltip-line--modis_aqua {
+  color: var(--sensor-modis);
+}
+
+.chart-tooltip-line--viirs_n20 {
+  color: var(--sensor-viirs);
+}
+
+.chart-tooltip-line--viirs_snpp {
+  color: var(--sensor-viirs-light);
+}
+
+.chart-subtitle {
+  margin: -7px 0 13px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .calendar-scroll {
@@ -747,6 +789,59 @@
 
 .state-banner p {
   line-height: 1.5;
+}
+
+.validation-table-scroll {
+  overflow-x: auto;
+}
+
+.validation-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  text-align: left;
+}
+
+.validation-table th,
+.validation-table td {
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.validation-table thead th {
+  color: var(--color-text-muted);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.validation-table tbody th {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.validation-table th:nth-child(n + 3),
+.validation-table td:nth-child(n + 3) {
+  text-align: right;
+}
+
+.validation-note {
+  margin-top: 13px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .loading-state {

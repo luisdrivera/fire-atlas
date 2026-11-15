@@ -1,20 +1,11 @@
 import { Menu } from 'lucide-react'
-import type { ApiHealthState } from '../../hooks/useApiHealth'
 
 interface HeaderProps {
-  connectionStatus: ApiHealthState
   isMenuOpen: boolean
   onMenuClick: () => void
 }
 
-const connectionLabels: Record<ApiHealthState, string> = {
-  connecting: 'Connecting',
-  connected: 'Connected',
-  offline: 'Offline',
-}
-
 export function Header({
-  connectionStatus,
   isMenuOpen,
   onMenuClick,
 }: HeaderProps) {
@@ -38,16 +29,9 @@ export function Header({
         </div>
       </div>
       <div className="topbar-right">
-        <div
-          aria-live="polite"
-          className="connection-status"
-          role="status"
-        >
-          <span
-            aria-hidden="true"
-            className={`status-dot status-dot--${connectionStatus}`}
-          />
-          <span>Backend {connectionLabels[connectionStatus]}</span>
+        <div aria-label="Data source: static files" className="static-data-badge">
+          <span aria-hidden="true" className="static-data-dot" />
+          <span>Static data</span>
         </div>
       </div>
     </header>
