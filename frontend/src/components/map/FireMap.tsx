@@ -12,13 +12,15 @@ export function FireMap() {
             [85, 180],
           ]}
           maxBoundsViscosity={1}
+          maxZoom={8}
           minZoom={2}
           scrollWheelZoom
           zoom={2}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution="Imagery: NASA GIBS / EOSDIS"
+            maxZoom={8}
+            url="https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg"
           />
         </MapContainer>
       </div>
