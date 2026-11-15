@@ -31,6 +31,14 @@
   --color-calendar-4: #ffad63;
   --color-calendar-scaled-stroke: #ffe0bd;
   --color-calendar-stroke: #0f171e;
+  --color-anomaly-negative-3: #527b91;
+  --color-anomaly-negative-2: #7394a7;
+  --color-anomaly-negative-1: #a4bbc5;
+  --color-anomaly-neutral: #56616b;
+  --color-anomaly-positive-1: #e2a36f;
+  --color-anomaly-positive-2: #e46f3b;
+  --color-anomaly-positive-3: #c64035;
+  --color-anomaly-insufficient: #606a73;
   --color-map-fallback: #111c25;
   --color-attribution-bg: rgb(10 16 22 / 85%);
   --color-overlay: rgb(12 19 26 / 92%);

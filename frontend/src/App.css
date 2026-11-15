@@ -348,6 +348,10 @@
   margin-bottom: 14px;
 }
 
+.unusual-conditions-panel {
+  margin-bottom: 14px;
+}
+
 .stat-card,
 .dashboard-section {
   border: 1px solid var(--color-border);
@@ -644,6 +648,80 @@
   font-size: 9px;
 }
 
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-bottom: 11px;
+}
+
+.calendar-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-raised);
+}
+
+.calendar-mode-toggle > span {
+  padding: 0 7px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+.calendar-mode-toggle button {
+  min-height: 29px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+}
+
+.calendar-mode-toggle button[aria-pressed="true"] {
+  border-color: var(--color-brand-border);
+  background: var(--color-brand-wash);
+  color: var(--color-text-primary);
+}
+
+.calendar-mode-toggle button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.anomaly-baseline-summary,
+.peak-season-note {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.anomaly-baseline-summary {
+  margin: 0;
+  text-align: right;
+}
+
+.peak-season-note {
+  margin: 0 0 9px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.calendar-peak-band {
+  fill: var(--color-brand);
+  fill-opacity: 0.2;
+  stroke: var(--color-brand);
+  stroke-opacity: 0.7;
+  stroke-width: 0.5px;
+}
+
 .calendar-cell {
   stroke: var(--color-calendar-stroke);
   stroke-width: 0.5px;
@@ -678,6 +756,59 @@
 
 .calendar-cell--4 {
   fill: var(--color-calendar-4);
+}
+
+.calendar-cell--anomaly-negative-3,
+.calendar-legend-cell--anomaly-negative-3 {
+  fill: var(--color-anomaly-negative-3);
+  background: var(--color-anomaly-negative-3);
+}
+
+.calendar-cell--anomaly-negative-2,
+.calendar-legend-cell--anomaly-negative-2 {
+  fill: var(--color-anomaly-negative-2);
+  background: var(--color-anomaly-negative-2);
+}
+
+.calendar-cell--anomaly-negative-1,
+.calendar-legend-cell--anomaly-negative-1 {
+  fill: var(--color-anomaly-negative-1);
+  background: var(--color-anomaly-negative-1);
+}
+
+.calendar-cell--anomaly-neutral,
+.calendar-legend-cell--anomaly-neutral {
+  fill: var(--color-anomaly-neutral);
+  background: var(--color-anomaly-neutral);
+}
+
+.calendar-cell--anomaly-positive-1,
+.calendar-legend-cell--anomaly-positive-1 {
+  fill: var(--color-anomaly-positive-1);
+  background: var(--color-anomaly-positive-1);
+}
+
+.calendar-cell--anomaly-positive-2,
+.calendar-legend-cell--anomaly-positive-2 {
+  fill: var(--color-anomaly-positive-2);
+  background: var(--color-anomaly-positive-2);
+}
+
+.calendar-cell--anomaly-positive-3,
+.calendar-legend-cell--anomaly-positive-3 {
+  fill: var(--color-anomaly-positive-3);
+  background: var(--color-anomaly-positive-3);
+}
+
+.calendar-cell--anomaly-insufficient,
+.calendar-legend-cell--anomaly-insufficient {
+  fill: var(--color-anomaly-insufficient);
+  background: var(--color-anomaly-insufficient);
+}
+
+.calendar-cell--anomaly-insufficient {
+  stroke: var(--color-text-muted);
+  stroke-dasharray: 1 1;
 }
 
 .calendar-cell--scaled {
@@ -738,6 +869,10 @@
 
 .calendar-legend-cell--4 {
   background: var(--color-calendar-4);
+}
+
+.calendar-legend--anomaly {
+  gap: 9px;
 }
 
 .calendar-source-legend {
@@ -832,6 +967,123 @@
   color: var(--color-text-muted);
   font-size: 10px;
   line-height: 1.55;
+}
+
+.unusual-conditions-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(230px, 1fr);
+  gap: 14px;
+}
+
+.anomaly-ranking-panel,
+.latest-week-card {
+  min-width: 0;
+}
+
+.anomaly-ranking-panel h3,
+.latest-week-card h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.anomaly-ranking {
+  display: grid;
+  gap: 7px;
+  margin: 11px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anomaly-ranking li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 7px 9px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface-raised);
+}
+
+.anomaly-rank {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand-wash);
+  color: var(--color-brand);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.anomaly-week-details {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+.anomaly-week-details strong {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.anomaly-z-score {
+  color: var(--color-anomaly-positive-3);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.latest-week-card {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-surface-raised);
+}
+
+.latest-week-card .eyebrow {
+  margin-bottom: 8px;
+}
+
+.latest-week-disclaimer {
+  margin-top: 6px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.latest-week-summary {
+  display: grid;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.latest-week-summary div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+}
+
+.latest-week-summary dt {
+  color: var(--color-text-muted);
+}
+
+.latest-week-summary dd {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  text-align: right;
 }
 
 .visually-hidden {
@@ -1053,6 +1305,14 @@
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
     margin-top: 12px;
+  }
+
+  .unusual-conditions-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .anomaly-baseline-summary {
+    text-align: left;
   }
 
   .map-frame {

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { BurningCalendar } from './components/calendar/BurningCalendar'
 import { ErrorState } from './components/common/ErrorState'
 import { LoadingState } from './components/common/LoadingState'
 import { SensorComparisonChart } from './components/comparison/SensorComparisonChart'
 import { StatsPanel } from './components/dashboard/StatsPanel'
+import { UnusualConditions } from './components/dashboard/UnusualConditions'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { FireMap } from './components/map/FireMap'
@@ -11,6 +12,8 @@ import { ValidationPanel } from './components/comparison/ValidationPanel'
 import { useCalibrationMetrics } from './hooks/useCalibrationMetrics'
 import { useFrontendFireData } from './hooks/useFrontendFireData'
 import type { CalendarMetric } from './types/fire'
+import { calculateAnomalyAnalysis } from './utils/anomaly'
+import { summarizeWeeklyActivity } from './utils/weeklyFireActivity'
 import './App.css'
 
 function formatZoneName(value: string): string {
@@ -36,6 +39,17 @@ function App() {
     error,
     selectZone,
   } = useFrontendFireData()
+  const weeklyActivity = useMemo(
+    () =>
+      manifest && data
+        ? summarizeWeeklyActivity(data, manifest, metric)
+        : [],
+    [data, manifest, metric],
+  )
+  const anomalyAnalysis = useMemo(
+    () => calculateAnomalyAnalysis(weeklyActivity),
+    [weeklyActivity],
+  )
 
   const handleZoneChange = (value: string) => {
     const selected = manifest?.zones.find((item) => item.name === value)
@@ -160,12 +174,16 @@ function App() {
             </div>
             {manifest && data && (
               <BurningCalendar
-                data={data}
+                anomalyAnalysis={anomalyAnalysis}
                 manifest={manifest}
                 metric={metric}
+                weeklyActivity={weeklyActivity}
               />
             )}
           </section>
+          {manifest && data && (
+            <UnusualConditions analysis={anomalyAnalysis} metric={metric} />
+          )}
 
           <section
             aria-labelledby="map-title"
