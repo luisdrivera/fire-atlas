@@ -1,0 +1,44 @@
+:root {
+  color-scheme: dark;
+  --color-bg: #0a1016;
+  --color-sidebar: #0c131a;
+  --color-header: rgb(10 16 22 / 88%);
+  --color-surface: #111a23;
+  --color-surface-raised: #17232e;
+  --color-border: #24323e;
+  --color-border-strong: #30414f;
+  --color-text-primary: #edf3f7;
+  --color-text-secondary: #9cabb7;
+  --color-text-muted: #6f808d;
+  --color-brand: #e4a866;
+  --color-brand-border: rgb(228 168 102 / 36%);
+  --color-brand-wash: rgb(228 168 102 / 10%);
+  --sensor-modis: #ff9a4d;
+  --sensor-viirs: #48d5e8;
+  --color-status-good: #55c99a;
+  --color-status-good-wash: rgb(85 201 154 / 15%);
+  --color-status-bad: #ff7b72;
+  --color-status-bad-wash: rgb(255 123 114 / 9%);
+  --color-status-bad-border: rgb(255 123 114 / 25%);
+  --color-status-pending: #e4a866;
+  --color-status-pending-wash: rgb(228 168 102 / 16%);
+  --color-calendar-0: #19242d;
+  --color-calendar-1: #355b57;
+  --color-calendar-2: #668f6b;
+  --color-calendar-3: #b7c978;
+  --color-calendar-stroke: #0f171e;
+  --color-map-fallback: #111c25;
+  --color-attribution-bg: rgb(10 16 22 / 85%);
+  --color-overlay: rgb(12 19 26 / 92%);
+  --color-tooltip: #101821;
+  --color-chart-grid: #26343f;
+  --color-notice: #151d25;
+  --color-notice-text: #dce5eb;
+  --color-notice-border: #3a4853;
+  --color-backdrop: rgb(1 5 9 / 65%);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sidebar-width: 244px;
+  --shadow-notice: 0 8px 30px rgb(0 0 0 / 35%);
+
+  font-family: var(--font-sans);
+}

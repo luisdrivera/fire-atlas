@@ -1,121 +1,126 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { BurningCalendar } from './components/calendar/BurningCalendar'
+import { ErrorState } from './components/common/ErrorState'
+import { LoadingState } from './components/common/LoadingState'
+import { SensorComparisonChart } from './components/comparison/SensorComparisonChart'
+import { StatsPanel } from './components/dashboard/StatsPanel'
+import { Header } from './components/layout/Header'
+import { Sidebar } from './components/layout/Sidebar'
+import { FireMap } from './components/map/FireMap'
+import { useApiHealth } from './hooks/useApiHealth'
+import type { BurningActivityRecord, SensorComparisonPoint } from './types/fire'
 import './App.css'
 
+const burningActivity: BurningActivityRecord[] = []
+const sensorComparison: SensorComparisonPoint[] = []
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const connectionStatus = useApiHealth()
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className="app-shell">
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      {sidebarOpen && (
         <button
+          aria-label="Close navigation menu"
+          className="sidebar-backdrop"
+          onClick={() => setSidebarOpen(false)}
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        />
+      )}
 
-      <div className="ticks"></div>
+      <div className="app-main">
+        <Header
+          connectionStatus={connectionStatus}
+          isMenuOpen={sidebarOpen}
+          onMenuClick={() => setSidebarOpen(true)}
+        />
+        <main className="dashboard-content" id="overview">
+          {connectionStatus === 'connecting' && (
+            <LoadingState message="Checking backend connection..." />
+          )}
+          {connectionStatus === 'offline' && (
+            <ErrorState
+              message="The dashboard is available, but the backend health endpoint could not be reached."
+              title="Backend unavailable"
+            />
+          )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <section aria-labelledby="overview-title" className="welcome-section">
+            <div>
+              <p className="eyebrow">GLOBAL FIRE MONITORING</p>
+              <h1 id="overview-title">Fire activity overview</h1>
+              <p className="welcome-copy">
+                Historical active fire detections from NASA satellite sensors.
+              </p>
+            </div>
+            <div className="data-status">
+              <span aria-hidden="true" className="data-status-dot" />
+              Awaiting data
+            </div>
+          </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          <StatsPanel />
+
+          <section aria-labelledby="map-title" className="dashboard-section" id="map">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">GEOGRAPHIC DISTRIBUTION</p>
+                <h2 id="map-title">Global fire map</h2>
+              </div>
+              <span className="section-meta">WORLDWIDE</span>
+            </div>
+            <FireMap />
+          </section>
+
+          <div className="analysis-grid">
+            <section
+              aria-labelledby="calendar-title"
+              className="dashboard-section analysis-panel"
+              id="calendar"
+            >
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">HISTORICAL PATTERNS</p>
+                  <h2 id="calendar-title">Burning Activity Calendar</h2>
+                </div>
+                <span aria-hidden="true" className="panel-icon">DOY</span>
+              </div>
+              <BurningCalendar data={burningActivity} />
+            </section>
+
+            <section
+              aria-labelledby="comparison-title"
+              className="dashboard-section analysis-panel"
+              id="comparison"
+            >
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">SENSOR COVERAGE</p>
+                  <h2 id="comparison-title">MODIS vs VIIRS</h2>
+                </div>
+                <span aria-hidden="true" className="panel-icon">vs</span>
+              </div>
+              <SensorComparisonChart data={sensorComparison} />
+            </section>
+          </div>
+
+          <footer className="dashboard-footer">
+            <span>NASA FIRMS data integration is not yet available.</span>
+            <span>FIRE ATLAS · SCIENTIFIC DATA VISUALIZATION</span>
+          </footer>
+        </main>
+      </div>
+
+      <aside aria-label="Implementation status" className="harmonization-notice">
+        <span aria-hidden="true" className="notice-mark">!</span>
+        <span>Harmonization method: not implemented yet</span>
+      </aside>
+    </div>
   )
 }
 
