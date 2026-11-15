@@ -22,10 +22,13 @@
   --color-status-bad-border: rgb(255 123 114 / 25%);
   --color-status-pending: #e4a866;
   --color-status-pending-wash: rgb(228 168 102 / 16%);
-  --color-calendar-0: #19242d;
-  --color-calendar-1: #355b57;
-  --color-calendar-2: #668f6b;
-  --color-calendar-3: #b7c978;
+  --color-calendar-no-data: #26333d;
+  --color-calendar-zero: #302116;
+  --color-calendar-1: #633415;
+  --color-calendar-2: #994713;
+  --color-calendar-3: #d2691e;
+  --color-calendar-4: #ffad63;
+  --color-calendar-scaled-stroke: #ffe0bd;
   --color-calendar-stroke: #0f171e;
   --color-map-fallback: #111c25;
   --color-attribution-bg: rgb(10 16 22 / 85%);

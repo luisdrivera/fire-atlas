@@ -8,15 +8,42 @@ import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { FireMap } from './components/map/FireMap'
 import { useApiHealth } from './hooks/useApiHealth'
-import type { BurningActivityRecord, SensorComparisonPoint } from './types/fire'
+import { useFrontendFireData } from './hooks/useFrontendFireData'
+import type { CalendarMetric } from './types/fire'
 import './App.css'
 
-const burningActivity: BurningActivityRecord[] = []
-const sensorComparison: SensorComparisonPoint[] = []
+function formatZoneName(value: string): string {
+  return value
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [metric, setMetric] = useState<CalendarMetric>('detections')
   const connectionStatus = useApiHealth()
+  const {
+    manifest,
+    zone,
+    data,
+    isLoading,
+    error,
+    selectZone,
+  } = useFrontendFireData()
+
+  const handleZoneChange = (value: string) => {
+    const selected = manifest?.zones.find((item) => item.name === value)
+    if (selected) {
+      selectZone(selected.name)
+    }
+  }
+
+  const handleMetricChange = (value: string) => {
+    if (value === 'detections' || value === 'frp') {
+      setMetric(value)
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -58,13 +85,70 @@ function App() {
                 Historical active fire detections from NASA satellite sensors.
               </p>
             </div>
-            <div className="data-status">
-              <span aria-hidden="true" className="data-status-dot" />
-              Awaiting data
+            <div className="dashboard-toolbar">
+              {manifest && zone && (
+                <label className="dashboard-control" htmlFor="zone-select">
+                  Region
+                  <select
+                    id="zone-select"
+                    onChange={(event) =>
+                      handleZoneChange(event.currentTarget.value)
+                    }
+                    value={zone}
+                  >
+                    {manifest.zones.map((item) => (
+                      <option key={item.name} value={item.name}>
+                        {formatZoneName(item.name)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              <label className="dashboard-control" htmlFor="metric-select">
+                Metric
+                <select
+                  id="metric-select"
+                  onChange={(event) =>
+                    handleMetricChange(event.currentTarget.value)
+                  }
+                  value={metric}
+                >
+                  <option value="detections">Detections</option>
+                  <option value="frp">FRP</option>
+                </select>
+              </label>
             </div>
           </section>
 
-          <StatsPanel />
+          {isLoading && <LoadingState message="Loading fire activity data..." />}
+          {error && (
+            <ErrorState
+              message={error}
+              title="Unable to load public fire data"
+            />
+          )}
+          {manifest && !manifest.history_included && (
+            <div className="history-warning" role="note">
+              <span aria-hidden="true" className="history-warning-mark">
+                !
+              </span>
+              <span>Pre-2018 MODIS history not included</span>
+            </div>
+          )}
+          {manifest && (
+            <details className="method-notes">
+              <summary>Method notes</summary>
+              <ul>
+                {manifest.notes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+
+          {manifest && data && (
+            <StatsPanel data={data} manifest={manifest} metric={metric} />
+          )}
 
           <section aria-labelledby="map-title" className="dashboard-section" id="map">
             <div className="section-heading">
@@ -88,9 +172,17 @@ function App() {
                   <p className="eyebrow">HISTORICAL PATTERNS</p>
                   <h2 id="calendar-title">Burning Activity Calendar</h2>
                 </div>
-                <span aria-hidden="true" className="panel-icon">DOY</span>
+                <span className="section-meta">
+                  {metric === 'detections' ? 'DETECTIONS' : 'FRP'}
+                </span>
               </div>
-              <BurningCalendar data={burningActivity} />
+              {manifest && data && (
+                <BurningCalendar
+                  data={data}
+                  manifest={manifest}
+                  metric={metric}
+                />
+              )}
             </section>
 
             <section
@@ -105,7 +197,7 @@ function App() {
                 </div>
                 <span aria-hidden="true" className="panel-icon">vs</span>
               </div>
-              <SensorComparisonChart data={sensorComparison} />
+              <SensorComparisonChart data={[]} />
             </section>
           </div>
 
@@ -118,7 +210,7 @@ function App() {
 
       <aside aria-label="Implementation status" className="harmonization-notice">
         <span aria-hidden="true" className="notice-mark">!</span>
-        <span>Harmonization method: not implemented yet</span>
+        <span>Harmonization: proof of concept</span>
       </aside>
     </div>
   )
